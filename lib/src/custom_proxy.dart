@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:native_flutter_proxy/native_flutter_proxy.dart';
 
 /// {@template custom_proxy}
@@ -29,6 +30,7 @@ import 'package:native_flutter_proxy/native_flutter_proxy.dart';
 /// Note: When [allowBadCertificates] is set to true, it may pose security risks
 /// and should be used with caution, especially in production environments.
 /// {@endtemplate}
+@protected
 class CustomProxy {
   /// {@macro custom_proxy}
   const CustomProxy({

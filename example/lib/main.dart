@@ -21,7 +21,8 @@ void main() async {
     // Using debugPrint instead of print for production code
     debugPrint('Error fetching proxy settings: $e');
   }
-
+  print(host);
+  print(port);
   // Enable the proxy if it is enabled and the host is not null.
   if (enabled && host != null) {
     final proxy = CustomProxy(ipAddress: host, port: port).enable();

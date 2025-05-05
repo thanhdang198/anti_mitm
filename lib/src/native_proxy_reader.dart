@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 /// {@template custom_proxy}
@@ -17,6 +18,7 @@ import 'package:flutter/services.dart';
 /// }
 /// ```
 /// {@endtemplate}
+@protected
 abstract final class NativeProxyReader {
   /// Method channel for native platform communication.ƒ
   static const _channel = MethodChannel('native_flutter_proxy');
@@ -30,6 +32,7 @@ abstract final class NativeProxyReader {
 /// {@template proxy_setting}
 /// A class to hold proxy settings like host and port.
 /// {@endtemplate}
+@protected
 class ProxySetting {
   /// {@macro proxy_setting}
   const ProxySetting._({this.host, this.port});

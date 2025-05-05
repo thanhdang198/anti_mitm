@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
+
 /// {@template custom_proxy_http_override}
 /// A custom HTTP override class that allows setting a global proxy for all HTTP requests.
 ///
@@ -23,6 +25,7 @@ import 'dart:io';
 /// Note: Use with caution in production environments as it can compromise
 /// security if not configured properly.
 /// {@endtemplate}
+@protected
 final class CustomProxyHttpOverride extends HttpOverrides {
   /// Create a new instance of [CustomProxyHttpOverride] with the specified proxy settings.
   ///

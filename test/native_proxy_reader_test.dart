@@ -1,6 +1,6 @@
+import 'package:anti_mitm/src/native_proxy_reader.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:native_flutter_proxy/src/native_proxy_reader.dart';
 
 void main() {
   const channel = MethodChannel('native_flutter_proxy');

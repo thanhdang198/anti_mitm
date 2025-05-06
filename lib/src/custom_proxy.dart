@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:anti_mitm/native_flutter_proxy.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:native_flutter_proxy/native_flutter_proxy.dart';
 
 /// {@template custom_proxy}
 /// A class that manages custom proxy settings for Flutter applications.

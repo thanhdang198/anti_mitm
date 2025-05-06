@@ -6,3 +6,6 @@ formatter:
 linter:
   rules:
     lines_longer_than_80_chars: false
+analyzer:
+  errors:
+    use_if_null_to_convert_nulls_to_bools: ignore

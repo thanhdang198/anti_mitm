@@ -1,34 +1,18 @@
 // ignore_for_file: unused_local_variable
+import 'package:anti_mitm/native_flutter_proxy.dart';
 import 'package:flutter/material.dart';
-import 'package:native_flutter_proxy/native_flutter_proxy.dart';
 
 void main() async {
   // Ensure that the WidgetsBinding is initialized before calling the
   // [NativeProxyReader.proxySetting] method.
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Get the proxy settings from the native platform.
-  var enabled = false;
-  String? host;
-  int? port;
-
-  try {
-    final settings = await NativeProxyReader.proxySetting;
-    enabled = settings.enabled;
-    host = settings.host;
-    port = settings.port;
-  } catch (e) {
-    // Using debugPrint instead of print for production code
-    debugPrint('Error fetching proxy settings: $e');
+  final isConnectedToProxy = await AntiMitm.isConnectedToProxy();
+  if (isConnectedToProxy) {
+    debugPrint('Please disconnect from the proxy.');
+  } else {
+    debugPrint('Not connected to a proxy.');
   }
-  print(host);
-  print(port);
-  // Enable the proxy if it is enabled and the host is not null.
-  if (enabled && host != null) {
-    final proxy = CustomProxy(ipAddress: host, port: port).enable();
-    debugPrint('proxy enabled');
-  }
-
   runApp(const MyApp());
 }
 
@@ -65,11 +49,50 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   int counter = 0;
 
   /// Increments the counter value.
   void _incrementCounter() => setState(() => counter++);
+  @override
+  void initState() {
+    super.initState();
+    // Đăng ký observer
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    // Hủy đăng ký observer
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+    debugPrint('AppLifecycleState: $state');
+    switch (state) {
+      case AppLifecycleState.resumed:
+        final isConnectedToProxy = await AntiMitm.isConnectedToProxy();
+        if (isConnectedToProxy) {
+          debugPrint('Please disconnect from the proxy.');
+        } else {
+          debugPrint('Not connected to a proxy.');
+        }
+      case AppLifecycleState.inactive:
+        // App is inactive
+        break;
+      case AppLifecycleState.paused:
+        // App is in the background
+        break;
+      case AppLifecycleState.detached:
+        // App is detached
+        break;
+      case AppLifecycleState.hidden:
+        throw UnimplementedError();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

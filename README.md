@@ -1,18 +1,24 @@
-[![Pub Version](https://img.shields.io/pub/v/native_flutter_proxy)](https://pub.dev/packages/native_flutter_proxy)
+[![Pub Version](https://img.shields.io/pub/v/anti_mitm)](https://pub.dev/packages/anti_mitm)
 
-# native_flutter_proxy
 
-A flutter plugin to read network proxy info from native. It can be used to set up the network proxy for flutter.
-The plugin provides classes to provide the HttpOverrides.global property with a proxy setting.
-This ensures that the gap of flutter in supporting proxy communication is filled by a convenient solution.
+This plugin is based on the `native_flutter_proxy` plugin, which is a Flutter plugin that provides a way to read the proxy settings of the device.
 
+# anti_mitm
+
+A flutter plugin to detect if the device is connected to a proxy. This is useful for detecting if the device is being used by 3rd party applications to intercept the traffic. 
+
+This plugin is useful for detect if the device is using HTTP Toolkit, Burp Suite, Proxyman, Charles Proxy, Fiddler, mitmproxy, etc. to intercept the traffic.
+
+It can't detect if attacker is using another tool to intercept the traffic, such as SSL Kill Switch, SSL Unpinning, etc.
+
+Consider to use more advanced tools to detect if your app is being attacked.
 ## Installing
 
 You should add the following to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  native_flutter_proxy: latest
+  anti_mitm: latest
 ```
 
 
@@ -20,41 +26,93 @@ dependencies:
 
 - Step 1: make your main()-method async
 - Step 2: add WidgetsFlutterBinding.ensureInitialized(); to your async-main()-method
-- Step 3: read the proxy settings from the wifi profile natively
-- Step 4: if enabled, override the proxy settings with the CustomProxy.
+- Step 3: check if the device is connected to a proxy
+- Step 4: if the device is connected to a proxy, please disable all connection from your application, cause the plugin is detected user is using a mitm proxy to intercept the traffic
 
 ```dart
 void main() async {
+  // Ensure that the WidgetsBinding is initialized before calling the
+  // [NativeProxyReader.proxySetting] method.
   WidgetsFlutterBinding.ensureInitialized();
 
-  bool enabled = false;
-  String? host;
-  int? port;
-  try {
-    ProxySetting settings = await NativeProxyReader.proxySetting;
-    enabled = settings.enabled;
-    host = settings.host;
-    port = settings.port;
-  } catch (e) {
-    print(e);
+  var isConnectedToProxy = await AntiMitm.isConnectedToProxy();
+  if (isConnectedToProxy) {
+    print('Please disconnect from the proxy.');
+  } else {
+    print('Not connected to a proxy.');
   }
-  if (enabled && host != null) {
-    final proxy = CustomProxy(ipAddress: host, port: port);
-    proxy.enable();
-    print("proxy enabled");
-  }
-
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 ```
+Additionally, please run this function whenever your app is resumed to check if the device is connected to a proxy.
 
-## Getting Started
+```dart
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+class MyHomePage extends StatefulWidget {
+  /// Creates a new instance of [MyHomePage].
+  ///
+  /// The [title] parameter is required and displayed in the app bar.
+  const MyHomePage({required this.title, super.key});
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+  /// The title displayed in the app bar.
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
+  int counter = 0;
+
+  void _incrementCounter() => setState(() => counter++);
+  @override
+  void initState() {
+    super.initState();
+    // Đăng ký observer
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    // Hủy đăng ký observer
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+    print('AppLifecycleState: $state');
+    switch (state) {
+      case AppLifecycleState.resumed:
+        var isConnectedToProxy = await AntiMitm.isConnectedToProxy();
+        if (isConnectedToProxy) {
+          print('Please disconnect from the proxy.');
+        } else {
+          print('Not connected to a proxy.');
+        }
+        break;
+      case AppLifecycleState.inactive:
+        // App is inactive
+        break;
+      case AppLifecycleState.paused:
+        // App is in the background
+        break;
+      case AppLifecycleState.detached:
+        // App is detached
+        break;
+      case AppLifecycleState.hidden:
+        // TODO: Handle this case.
+        throw UnimplementedError();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      ...
+    );
+  }
+}
+
+```

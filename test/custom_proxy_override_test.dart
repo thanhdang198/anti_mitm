@@ -1,5 +1,5 @@
+import 'package:anti_mitm/native_flutter_proxy.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:native_flutter_proxy/native_flutter_proxy.dart';
 
 void main() {
   group('CustomProxyHttpOverride', () {

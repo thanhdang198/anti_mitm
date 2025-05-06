@@ -3,15 +3,15 @@
 # Run `pod lib lint native_flutter_proxy.podspec' to validate before publishing.
 #
 Pod::Spec.new do |s|
-  s.name             = 'native_flutter_proxy'
+  s.name             = 'anti_mitm'
   s.version          = '0.0.1'
   s.summary          = 'device proxy info.'
   s.description      = <<-DESC
 device proxy info.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://thanhdt.dev'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'ThanhDT' => 'contact@thanhdt.dev' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'

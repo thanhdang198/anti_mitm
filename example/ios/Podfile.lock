@@ -1,21 +1,21 @@
 PODS:
-  - Flutter (1.0.0)
-  - native_flutter_proxy (0.0.1):
+  - anti_mitm (0.0.1):
     - Flutter
+  - Flutter (1.0.0)
 
 DEPENDENCIES:
+  - anti_mitm (from `.symlinks/plugins/anti_mitm/ios`)
   - Flutter (from `Flutter`)
-  - native_flutter_proxy (from `.symlinks/plugins/native_flutter_proxy/ios`)
 
 EXTERNAL SOURCES:
+  anti_mitm:
+    :path: ".symlinks/plugins/anti_mitm/ios"
   Flutter:
     :path: Flutter
-  native_flutter_proxy:
-    :path: ".symlinks/plugins/native_flutter_proxy/ios"
 
 SPEC CHECKSUMS:
+  anti_mitm: 1edffa4036063b2114be4e2eb6e076c5049ffc4a
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  native_flutter_proxy: a96434620247e3a0e3ebffde6dae1c31e2745256
 
 PODFILE CHECKSUM: 4e8f8b2be68aeea4c0d5beb6ff1e79fface1d048
 

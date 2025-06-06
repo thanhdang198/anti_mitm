@@ -1,6 +1,6 @@
 #import "FlutterProxyPlugin.h"
-#if __has_include(<native_flutter_proxy/native_flutter_proxy-Swift.h>)
-#import <native_flutter_proxy/native_flutter_proxy-Swift.h>
+#if __has_include(<anti_mitm/anti_mitm-Swift.h>)
+#import <anti_mitm/anti_mitm-Swift.h>
 #else
 // Support project import fallback if the generated compatibility header
 // is not copied when this plugin is created as a library.

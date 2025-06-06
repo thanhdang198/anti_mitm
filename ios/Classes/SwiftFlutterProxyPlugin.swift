@@ -16,7 +16,7 @@ public class SwiftFlutterProxyPlugin: NSObject, FlutterPlugin {
    * @param registrar The Flutter plugin registrar.
    */
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "native_flutter_proxy", binaryMessenger: registrar.messenger())
+    let channel = FlutterMethodChannel(name: "anti_mitm", binaryMessenger: registrar.messenger())
     let instance = SwiftFlutterProxyPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
   }

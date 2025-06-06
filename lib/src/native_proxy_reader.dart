@@ -21,7 +21,7 @@ import 'package:flutter/services.dart';
 @protected
 abstract final class NativeProxyReader {
   /// Method channel for native platform communication.ƒ
-  static const _channel = MethodChannel('native_flutter_proxy');
+  static const _channel = MethodChannel('anti_mitm');
 
   /// Get the proxy settings from the native platform.
   static Future<ProxySetting> get proxySetting async {

@@ -11,7 +11,18 @@ This plugin is useful for detect if the device is using HTTP Toolkit, Burp Suite
 
 It can't detect if attacker is using another tool to intercept the traffic, such as SSL Kill Switch, SSL Unpinning, etc.
 
+**New Feature:** The plugin now includes network blocking capabilities to prevent all HTTP/HTTPS requests when suspicious proxy activity is detected.
+
 Consider to use more advanced tools to detect if your app is being attacked.
+
+## Features
+
+- ✅ Detect proxy connections (HTTP Toolkit, Burp Suite, Proxyman, etc.)
+- ✅ Identify local capture IPs used by debugging tools
+- ✅ **Block all network connections** when threats are detected
+- ✅ Automatic security checks with optional auto-blocking
+- ✅ Cross-platform support (iOS, Android)
+
 ## Installing
 
 You should add the following to your `pubspec.yaml` file:
@@ -24,10 +35,12 @@ dependencies:
 
 ## Example
 
+### Basic Usage
+
 - Step 1: make your main()-method async
 - Step 2: add WidgetsFlutterBinding.ensureInitialized(); to your async-main()-method
 - Step 3: check if the device is connected to a proxy
-- Step 4: if the device is connected to a proxy, please disable all connection from your application, cause the plugin is detected user is using a mitm proxy to intercept the traffic
+- Step 4: if the device is connected to a proxy, use the built-in network blocking to protect your app
 
 ```dart
 void main() async {
@@ -35,15 +48,81 @@ void main() async {
   // [NativeProxyReader.proxySetting] method.
   WidgetsFlutterBinding.ensureInitialized();
 
-  var isConnectedToProxy = await AntiMitm.isConnectedToProxy();
-  if (isConnectedToProxy) {
-    print('Please disconnect from the proxy.');
-  } else {
-    print('Not connected to a proxy.');
+  var isConnectedToSensitiveProxy = await AntiMitm.isConnectedToSensitiveProxy();
+  if (isConnectedToSensitiveProxy) {
+    print('Sensitive proxy detected! Blocking all network connections.');
+    
+    // Block all network connections automatically
+    AntiMitm.blockAllConnections();
+    
+    // Show warning to user
+    // Your security handling code here...
   }
-  runApp(const MyApp());
+
+  runApp(MyApp());
 }
 ```
+
+### Advanced Usage with Auto-blocking
+
+```dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Perform comprehensive security check with auto-blocking
+  bool isSafe = await AntiMitm.performSecurityCheck(autoBlock: true);
+  
+  if (!isSafe) {
+    print('🚨 Security threat detected and blocked!');
+    // Show security warning to user
+    // Log security event
+    // Handle according to your security policy
+  }
+
+  runApp(MyApp());
+}
+```
+
+### Manual Network Control
+
+```dart
+import 'package:anti_mitm/src/anti_mitm.dart';
+
+class SecurityManager {
+  static Future<void> checkAndBlockThreats() async {
+    if (await AntiMitm.isConnectedToSensitiveProxy()) {
+      // Block all network access
+      AntiMitm.blockAllConnections();
+      
+      // Check if blocking is active
+      print('Network blocked: ${AntiMitm.isNetworkBlocked}');
+    }
+  }
+  
+  static void restoreNetworkAccess() {
+    // Restore normal network access after threat is resolved
+    AntiMitm.restoreConnections();
+    print('Network access restored');
+  }
+}
+```
+
+### Using Direct HttpOverrides
+
+```dart
+import 'package:anti_mitm/src/disable_all_connection.dart';
+import 'dart:io';
+
+void blockAllConnections() {
+  // Direct usage without helper methods
+  HttpOverrides.global = NoNetworkHttpOverrides();
+}
+
+void restoreConnections() {
+  HttpOverrides.global = null;
+}
+```
+
 Additionally, please run this function whenever your app is resumed to check if the device is connected to a proxy.
 
 ```dart
@@ -85,11 +164,11 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     print('AppLifecycleState: $state');
     switch (state) {
       case AppLifecycleState.resumed:
-        var isConnectedToProxy = await AntiMitm.isConnectedToProxy();
-        if (isConnectedToProxy) {
-          print('Please disconnect from the proxy.');
+        var isConnectedToSensitiveProxy = await AntiMitm.isConnectedToSensitiveProxy();
+        if (isConnectedToSensitiveProxy) {
+          print('Sensitive proxy detected! Handle disconnect all app internet here.');
         } else {
-          print('Not connected to a proxy.');
+          print('Seems the app is safe to use.');
         }
         break;
       case AppLifecycleState.inactive:
@@ -114,5 +193,4 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     );
   }
 }
-
 ```

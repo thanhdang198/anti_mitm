@@ -8,3 +8,4 @@ export './src/anti_mitm.dart';
 export './src/custom_proxy.dart';
 export './src/custom_proxy_override.dart';
 export './src/native_proxy_reader.dart';
+export 'src/disable_all_connection.dart';

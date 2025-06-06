@@ -11,6 +11,7 @@ dependencies:
     path: ../
   flutter:
     sdk: flutter
+  http: ^1.1.0
   # anti_mitm: ^0.2.0
   
 dev_dependencies:

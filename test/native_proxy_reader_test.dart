@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const channel = MethodChannel('native_flutter_proxy');
+  const channel = MethodChannel('anti_mitm');
 
   TestWidgetsFlutterBinding.ensureInitialized();
 
